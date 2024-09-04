@@ -15,13 +15,15 @@ class Battleship:
         game_round = int(self.client.send({"type": "game", "round": 0})['round'])
 
         print("Round:", game_round)
-        if game_round % 2 == self.player_index:
-            reply = self.client.send({"type": "game", "pos": input("Enter a position: ")})
+        if game_round % 2 == self.player_index:  # if round is odd, A plays, if round is even, B plays
+            reply = self.client.send({"type": "game", "pos": [input("Enter a position: ")]})
         else:
+            # wait for opponent to play
             print("Waiting for opponent to play")
             reply = self.client.receive()
    
-        print(reply)
+        print(reply)  # print game state
+        # process game state and prepare for next round
 
     def start(self):
         while True:
