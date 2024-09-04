@@ -21,15 +21,16 @@ s.settimeout(0.5)
 print("Waiting for a connection")
 
 currentId = "A"
-
+all_clients = []
 stateA = [0]*64
 stateB = [0]*64   #-1 not hit #1 hit #0 no boat 
-shipA = [0]*16    #send/recieve as strings.
-shipB = [0]*16
+shipA = None    #send/recieve as strings.
+shipB = None
 
 def threaded_client(conn):
     global currentId, pos, shipA, shipB
-    conn.send(json.dumps(currentId).encode())
+    
+    conn.send(json.dumps({"client": current}).encode())
     currentId = "B"
     reply = 'funk u'
     while True:
@@ -68,8 +69,8 @@ def threaded_client(conn):
             print(e)
             break
         
-        print("Connection Closed")
-        conn.close()      
+    print("Connection Closed")
+    conn.close()      
 
         
                        
