@@ -41,9 +41,9 @@ def threaded_client(conn):
             else:
                 if (reply["type"] == "init"):
                     if (reply["client"] == "A"):
-                        shipA = [1 for i in shipA if i in reply["ships"] else 0]
+                        shipA = [1 if i in reply["ships"] else 0 for i in shipA]
                     elif(reply["client"] == "B"):
-                        shipB = [1 for i in shipB if i in reply["ships"] else 0]
+                        shipB = [1 if i in reply["ships"] else 0 for i in shipB]
                         
                 elif(reply["type"] == "game"):
                     target_pos = int(reply["pos"])
