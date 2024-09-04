@@ -28,10 +28,10 @@ shipA = [0]*16    #send/recieve as strings.
 shipB = [0]*16
 
 def threaded_client(conn):
-    global currentId, pos
+    global currentId, pos, shipA, shipB
     conn.send(json.dumps(currentId).encode())
     currentId = "B"
-    reply = ''
+    reply = 'funk u'
     while True:
         try:
             data = conn.recv(2048).decode('utf-8')
@@ -47,9 +47,9 @@ def threaded_client(conn):
             
             if (data["type"] == "init"):
                 if (data["client"] == "A"):
-                    shipA = [1 if i in data["ships"] else 0 for i in shipA]
+                    shipA = [int(ship) for ship in data['ships']]
                 elif(data["client"] == "B"):
-                    shipB = [1 if i in data["ships"] else 0 for i in shipB]
+                    shipB = [int(ship) for ship in data['ships']]
                         
                 # elif(reply["type"] == "game"):
                 #     target_pos = int(reply["pos"])
@@ -62,7 +62,7 @@ def threaded_client(conn):
                 # elif(reply["type"] == "disconnect"):
                 #     pass   
 
-                    
+            conn.sendall(json.dumps(reply).encode("utf-8"))       
                     
         except socket.error as e:
             print(e)
