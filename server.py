@@ -45,17 +45,19 @@ def threaded_client(conn):
                     elif(reply["client"] == "B"):
                         shipB = [1 if i in reply["ships"] else 0 for i in shipB]
                         
-                elif(reply["type"] == "game"):
-                    target_pos = int(reply["pos"])
-                    reply = 0
-                    if(reply["client"] == "A" and stateB[target_pos] == 1):
-                        stateB[target_pos] == 1
+                # elif(reply["type"] == "game"):
+                #     target_pos = int(reply["pos"])
+                #     reply = 0
+                #     if(reply["client"] == "A" and stateB[target_pos] == 1):
+                #         stateB[target_pos] == 1
                        
-                    elif(reply["client"] == "B" and stateA[target_pos] == 1):
-                        stateA[target_pos] == 1
+                #     elif(reply["client"] == "B" and stateA[target_pos] == 1):
+                #         stateA[target_pos] == 1
+                # elif(reply["type"] == "disconnect"):
+                #     pass   
+
                     
                     
-                    print("Sending: ")
         except:
             break
         
