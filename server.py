@@ -34,17 +34,22 @@ def threaded_client(conn):
     reply = ''
     while True:
         try:
-            data = conn.recv(2048)
-            reply = json.loads(data)
+            data = conn.recv(2048).decode('utf-8')
             if not data:
-                conn.send(str.encode("Goodbye"))
+                print(currentId, "disconnected")
                 break
-            else:
-                if (reply["type"] == "init"):
-                    if (reply["client"] == "A"):
-                        shipA = [1 if i in reply["ships"] else 0 for i in shipA]
-                    elif(reply["client"] == "B"):
-                        shipB = [1 if i in reply["ships"] else 0 for i in shipB]
+
+            print("Received:",  fr'{data}')
+            try:
+                data = json.loads(data)
+            except json.JSONDecodeError:
+                continue
+            
+            if (data["type"] == "init"):
+                if (data["client"] == "A"):
+                    shipA = [1 if i in data["ships"] else 0 for i in shipA]
+                elif(data["client"] == "B"):
+                    shipB = [1 if i in data["ships"] else 0 for i in shipB]
                         
                 # elif(reply["type"] == "game"):
                 #     target_pos = int(reply["pos"])

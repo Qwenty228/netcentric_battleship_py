@@ -13,13 +13,14 @@ class Network:
     def connect(self):
         try:
             self.client.connect(self.addr)
-            return json.loads(self.client.recv(2048))
+            server_reply = json.loads(self.client.recv(2048))
+            self.send({"type": "init", "client": server_reply, "ships": ["0", "1"]})
         except socket.error as e:
             print(str(e))
 
     def send(self, data):
         try:
-            self.client.send(json.dumps(data))
+            self.client.send(json.dumps(data).encode("utf-8"))
             return json.loads(self.client.recv(2048))
         except socket.error as e:
             print(str(e))
