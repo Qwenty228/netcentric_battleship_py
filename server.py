@@ -26,15 +26,17 @@ stateA = [0]*64
 stateB = [0]*64   #-1 not hit #1 hit #0 no boat 
 shipA = None    #send/recieve as strings.
 shipB = None
+game_round = 1
+
 
 def threaded_client(conn):
-    global currentId, pos, shipA, shipB
+    global currentId, pos, shipA, shipB, game_round
     
     for client in all_clients:
         client.sendall(json.dumps({"client": currentId, "ready": len(all_clients) == 2}).encode("utf-8"))
 
     currentId = "B"
-    reply = 'funk u'
+    reply = {}
     while True:
         try:
             data = conn.recv(2048).decode('utf-8')
@@ -53,17 +55,20 @@ def threaded_client(conn):
                     shipA = [int(ship) for ship in data['ships']]
                 elif(data["client"] == "B"):
                     shipB = [int(ship) for ship in data['ships']]
+                
+            elif (data["type"] == "game"):
+                if "round" in data:
+                    reply = {"type": "game", "round": game_round}
+                else:
+                    target_pos = int(data["pos"])
+                    # print(data)
+                    game_round += 1
+                    reply = {"type": "game", "pos": target_pos}
+                    for client in all_clients:
+                        if client != conn:
+                            client.sendall(json.dumps(reply).encode("utf-8"))
                         
-                # elif(reply["type"] == "game"):
-                #     target_pos = int(reply["pos"])
-                #     reply = 0
-                #     if(reply["client"] == "A" and stateB[target_pos] == 1):
-                #         stateB[target_pos] == 1
-                       
-                #     elif(reply["client"] == "B" and stateA[target_pos] == 1):
-                #         stateA[target_pos] == 1
-                # elif(reply["type"] == "disconnect"):
-                #     pass   
+   
 
             conn.sendall(json.dumps(reply).encode("utf-8"))       
                     

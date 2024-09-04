@@ -9,14 +9,14 @@ class Network:
         self.addr = self.server, self.port = 'localhost', 55555
         self.player = self.connect(name)
         self.ready = self.player['ready']
-        print(self.player)
+        # print(self.player)
 
     def connect(self, name):
         try:
             self.client.connect(self.addr)
             server_reply = json.loads(self.client.recv(2048))
             rep = self.send({"type": "init", "client": server_reply['client'], "ships": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"], "name": name})
-            print(rep)
+            # print(rep)
             return server_reply
         except socket.error as e:
             print(str(e))
