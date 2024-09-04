@@ -8,6 +8,7 @@ class Network:
         self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.addr = self.server, self.port = 'localhost', 55555
         self.player = self.connect()
+        print(self.player)
 
     def connect(self):
         try:
