@@ -16,7 +16,7 @@ class Battleship:
 
         print("Round:", game_round)
         if game_round % 2 == self.player_index:  # if round is odd, A plays, if round is even, B plays
-            reply = self.client.send({"type": "game", "pos": [input("Enter a position: ")]})
+            reply = self.client.send({"type": "game", "pos": input("Enter a position: ")})
         else:
             # wait for opponent to play
             print("Waiting for opponent to play")
