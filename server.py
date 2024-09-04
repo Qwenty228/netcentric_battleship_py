@@ -30,7 +30,9 @@ shipB = None
 def threaded_client(conn):
     global currentId, pos, shipA, shipB
     
-    conn.send(json.dumps({"client": current}).encode())
+    for client in all_clients:
+        client.sendall(json.dumps({"client": currentId, "ready": len(all_clients) == 2}).encode("utf-8"))
+
     currentId = "B"
     reply = 'funk u'
     while True:
@@ -70,7 +72,9 @@ def threaded_client(conn):
             break
         
     print("Connection Closed")
+    all_clients.remove(conn)
     conn.close()      
+
 
         
                        
@@ -83,6 +87,7 @@ def threaded_client(conn):
 while True:
     try:
         conn, addr = s.accept()
+        all_clients.append(conn)
         print("Connected to: ", addr)
     
         start_new_thread(threaded_client, (conn,))
