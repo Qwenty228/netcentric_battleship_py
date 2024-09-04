@@ -29,8 +29,8 @@ shipB = [0]*16
 
 def threaded_client(conn):
     global currentId, pos
-    conn.send(str.encode(currentId))
-    currentIndex = "B"
+    conn.send(json.dumps(currentId).encode())
+    currentId = "B"
     reply = ''
     while True:
         try:
