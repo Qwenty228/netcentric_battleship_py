@@ -20,6 +20,7 @@ netcentric_battleship_py/
 ├── server.py         # Server-side script for hosting the game and game logic
 ├── client.py         # Client turnbase game loop
 ├── network.py        # Client-side script for connecting to a game
+```
 
 
 - **`server.py`**: Hosts the game. This script waits for a client to connect and initiates the game once both players are ready.
