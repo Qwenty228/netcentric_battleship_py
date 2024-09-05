@@ -40,11 +40,11 @@ def print_my_attack(attack: list):
 
 class Battleship:
     def __init__(self) -> None:
-        username = input("Enter username: ")
+        self.name = input("Enter username: ")
         self.ships = [str(i) for i in random.sample(range(64), 16)]
         # game state init to server
         self.network = Network(
-            {"header": "init", "body": self.ships, "client": username})
+            {"header": "init", "body": self.ships, "client": self.name})
         self.player_index = 1 if self.network.client_id == "A" else 0
         self.my_attack = []
         self.opp_attack = ["0"] * 64
@@ -66,10 +66,10 @@ class Battleship:
             print("Waiting for opponent to play")
             self.opp_attack = json.loads(self.network.receive())['body']
 
-        print("My attack:")
+        print(self.name, "attack:")
         print_my_attack(self.my_attack)
 
-        print("My ships: ")
+        print(self.name, "ships: ")
         print_ships(self.ships, self.opp_attack)  # print game state
 
     def start(self):
