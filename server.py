@@ -14,7 +14,7 @@ class ShittierDowngradedVersionOfUddy_S_BattleshipTypeHandlerOrSomethingALongTha
     gamestate = {}
     def __init__(self, client: 'ClientHandler') -> None:
         self.client = client
-        ShittierDowngradedVersionOfUddy_S_BattleshipTypeHandlerOrSomethingALongThatLineMaybeNotIDKWithoutUsingPydantic.gamestate[client] = {"ships": [], "rendering_screen": [0]*64}
+        ShittierDowngradedVersionOfUddy_S_BattleshipTypeHandlerOrSomethingALongThatLineMaybeNotIDKWithoutUsingPydantic.gamestate[client] = {"ships": [], "rendering_screen": ["0"]*64}
 
 
     def game_start(self, ships: Iterable[int]) -> None:
@@ -26,9 +26,9 @@ class ShittierDowngradedVersionOfUddy_S_BattleshipTypeHandlerOrSomethingALongTha
         other_player_ships = ShittierDowngradedVersionOfUddy_S_BattleshipTypeHandlerOrSomethingALongThatLineMaybeNotIDKWithoutUsingPydantic.gamestate[other_client]["ships"]
         for pos in attack_positions:
             if pos in other_player_ships:
-                gamestate[pos] = 1
+                gamestate[pos] = "1"
             else:
-                gamestate[pos] = -1
+                gamestate[pos] = "-1"
         return {"header": "game", "body": gamestate}
             
 class ClientHandler(Thread):
