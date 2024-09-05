@@ -4,7 +4,7 @@ import random
 import json
 
 
-def print_ships(ships: list[str], attacked: list = []) -> None:
+def print_ships(ships: list[str], attacked: list) -> None:
     """
     Print the ships on the board
     _________________________
@@ -18,21 +18,20 @@ def print_ships(ships: list[str], attacked: list = []) -> None:
     |  |  |  |  | 0| 0| 0| 0|
     -------------------------
     """
-    board = [" "] * 64
+    letter = {"0": " ", "-1": "M", "1": "X"}
+    board = [letter[i] for i in attacked]
     for ship in ships:
+        if board[int(ship)] == "X":
+            continue
         board[int(ship)] = "0"
     print("____________________________________")
     for i in range(0, 64, 8):
-        if attacked:
-            if attacked[i] == "1":
-                board[i] = "X"
-            elif attacked[i] == "-1":
-                board[i] = "M"
         print("|", " | ".join(board[i:i+8]), "|")
     print("------------------------------------")
 
-
 def print_my_attack(attack: list):
+    if not attack:
+        attack = ["0"] * 64
     print("____________________________________")
     for i in range(0, 64, 8):
         print("|", " | ".join(attack[i:i+8]), "|")
@@ -40,14 +39,18 @@ def print_my_attack(attack: list):
 
 
 class Battleship:
-    def __init__(self, username: str = "") -> None:
+    def __init__(self) -> None:
+        username = input("Enter username: ")
         self.ships = [str(i) for i in random.sample(range(64), 16)]
         # game state init to server
         self.network = Network(
             {"header": "init", "body": self.ships, "client": username})
         self.player_index = 1 if self.network.client_id == "A" else 0
         self.my_attack = []
-        self.opp_attack = []
+        self.opp_attack = ["0"] * 64
+
+        print("My ships: ")
+        print_ships(self.ships, self.opp_attack)
 
     def game(self):
         # get round from server

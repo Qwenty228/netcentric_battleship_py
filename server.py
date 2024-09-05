@@ -67,7 +67,7 @@ class ClientHandler(Thread):
                 if (data["header"] == "init"):        # if client is initializing
                     self.logic_handler.game_start(list(map(int, data["body"])))
                     if (username := data.get("client")):
-                        self.ships.name = f"Client: {username}"
+                        self.name = f"Client: {username}"
 
 
                 elif (data["header"] == "game"):      # gmae loop
