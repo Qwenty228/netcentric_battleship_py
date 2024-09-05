@@ -6,6 +6,31 @@ import socket
 
 CLIENT_IDENTIFIERS = "AB"
 
+class ShittierDowngradedVersionOfUddy_S_BattleshipTypeHandlerOrSomethingALongThatLineMaybeNotIDKWithoutUsingPydantic:
+    """
+    I cannot find the repository for some reason so I am going to write a shittier version of it
+    It probably doesnt even work the same way but ehh
+    ***IT WORKS ON MY MACHINE***"""
+    gamestate = {}
+    def __init__(self, client: 'ClientHandler') -> None:
+        self.client = client
+        ShittierDowngradedVersionOfUddy_S_BattleshipTypeHandlerOrSomethingALongThatLineMaybeNotIDKWithoutUsingPydantic.gamestate[client] = {"ships": [], "rendering_screen": [0]*64}
+
+
+    def game_start(self, ships: Iterable[int]) -> None:
+        ShittierDowngradedVersionOfUddy_S_BattleshipTypeHandlerOrSomethingALongThatLineMaybeNotIDKWithoutUsingPydantic.gamestate[self.client]["ships"] = ships
+
+    def process_attack(self, attack_positions: list[int]) -> dict:
+        gamestate = ShittierDowngradedVersionOfUddy_S_BattleshipTypeHandlerOrSomethingALongThatLineMaybeNotIDKWithoutUsingPydantic.gamestate[self.client]["rendering_screen"]
+        other_client = next(client for client in ShittierDowngradedVersionOfUddy_S_BattleshipTypeHandlerOrSomethingALongThatLineMaybeNotIDKWithoutUsingPydantic.gamestate if client != self.client)
+        other_player_ships = ShittierDowngradedVersionOfUddy_S_BattleshipTypeHandlerOrSomethingALongThatLineMaybeNotIDKWithoutUsingPydantic.gamestate[other_client]["ships"]
+        for pos in attack_positions:
+            if pos in other_player_ships:
+                gamestate[pos] = 1
+            else:
+                gamestate[pos] = -1
+        return {"header": "game", "body": gamestate}
+            
 class ClientHandler(Thread):
     """
     ClientHandler class to handle multiple clients
@@ -18,10 +43,9 @@ class ClientHandler(Thread):
         self.client_id = CLIENT_IDENTIFIERS[len(ClientHandler.all_clients) % 2 - 1]
         self.name = f"Client-{self.client_id}"
         self.conn = conn
-        self.ships = [] # position of ships
-        self.rendering_screen = [] # attack positions
-
-
+        
+        self.logic_handler = ShittierDowngradedVersionOfUddy_S_BattleshipTypeHandlerOrSomethingALongThatLineMaybeNotIDKWithoutUsingPydantic(self)
+ 
     def run(self):
         # established connection
         for client in ClientHandler.all_clients:
@@ -33,7 +57,7 @@ class ClientHandler(Thread):
                 if not data:
                     break
 
-                print("Received:",  fr'{data}')
+                print(self.name, "Received:",  fr'{data}')
                 try:
                     data = json.loads(data)
                 except json.JSONDecodeError:
@@ -41,19 +65,19 @@ class ClientHandler(Thread):
 
                 reply = {}
                 if (data["header"] == "init"):        # if client is initializing
-                    self.ships = list(map(int, data["body"]))
+                    self.logic_handler.game_start(list(map(int, data["body"])))
                     if (username := data.get("client")):
                         self.ships.name = f"Client: {username}"
+
 
                 elif (data["header"] == "game"):      # gmae loop
                     if data.get('body') == "round":               # start of both round, both clients ask for current round
                         reply = {"header": "game", "body": ClientHandler.game_round}
                     else:
                         # get attack position
-                        target_pos = int(data["body"])
-
+                        target_pos = list(map(int, data["body"]))
+                        reply = self.logic_handler.process_attack(target_pos)
                         # reply to client with rendering screen (hit or miss list of game state)
-                        reply = {"header": "game", "body": target_pos}
                         for client in ClientHandler.all_clients:
                             if client.conn != self.conn:
                                 client.conn.sendall(json.dumps(reply).encode("utf-8"))

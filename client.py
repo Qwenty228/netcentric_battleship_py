@@ -4,9 +4,33 @@ import random
 import json
 
 
+
+def print_ships(ships: list[str], attakced: list = []) -> None:
+    """
+    Print the ships on the board
+    _________________________
+    |0 |  |  |  | 0|  |  |  |
+    |0 |  |  |  | 0|  |  |  |
+    |0 |  |  |  | 0|  |  |  |
+    |0 |  |  |  | 0|  |  |  |
+    |  |  |  |  |  |  |  |  |
+    |  |  |  |  |  |  |  |  |
+    |  | 0| 0| 0| 0|  |  |  |
+    |  |  |  |  | 0| 0| 0| 0|
+    -------------------------
+    """
+    board = ["0"] * 64
+    for ship in ships:
+        board[int(ship)] = "0"
+    print("____________________________________")
+    for i in range(0, 64, 8):
+        print("|", " | ".join(board[i:i+8]), "|")
+    print("------------------------------------")
+    
 class Battleship:
     def __init__(self, username: str = "") -> None:
-        self.network = Network({"header": "init", "body": [str(i) for i in random.sample(range(64), 16)], "client": username}) # game state init to server     
+        self.ships = [str(i) for i in random.sample(range(64), 16)]
+        self.network = Network({"header": "init", "body": self.ships, "client": username}) # game state init to server     
         self.player_index = 1 if self.network.client_id == "A" else 0
         
     def game(self):
@@ -15,12 +39,14 @@ class Battleship:
 
         print("Round:", game_round)
         if game_round % 2 == self.player_index:  # if round is odd, A plays, if round is even, B plays
-            reply = self.network.send({"header": "game", "body": input("Enter a position: ")})
+            reply = self.network.send({"header": "game", "body": [input("Enter a position: ")]})
         else:
             # wait for opponent to play
             print("Waiting for opponent to play")
             reply = self.network.receive()
-   
+
+        print_ships(self.ships)  # print game state
+
         print(reply)  # print game state
         # process game state and prepare for next round
 
